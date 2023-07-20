@@ -1,0 +1,28 @@
+<!-- Файл: search.html -->
+
+{% extends 'default.html' %}
+
+{% block title %}
+Search
+{% endblock title %}
+
+{% block content %}
+    <h1>Поиск новостей</h1>
+    <form method="get">
+        {% csrf_token %}
+        <p> Пример ввода для поиска по датам : 2023-07-07</p>
+        {{ filter.form.as_p }}
+        <button type="submit">Найти</button>
+    </form>
+    <hr>
+    {% if filter.qs %}
+        <h2>Результаты поиска:</h2>
+        <ul>
+            {% for post in filter.qs %}
+                <li><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a> - Автор: {{ post.author.user.username }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h2>Ничего не найдено</h2>
+    {% endif %}
+{% endblock content %}

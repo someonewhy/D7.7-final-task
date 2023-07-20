@@ -1,0 +1,65 @@
+{% extends 'default.html' %}
+
+{% load custom_mat %}
+{% load custom_tags %}
+
+{% block title %}
+Post
+{% endblock title %}
+
+{% block content %}
+   <h1>Все посты</h1>
+   <!-- Выводим количество новостей в списке -->
+    <p>Количество новостей на страницы: {{ object_list|length }}</p>
+    <p>Количесвто всех новостей: {{ total_posts_count }}</p>
+   <h3>{% current_time '%b %d %Y' %}</h3>
+   <!-- Если в переменной next_sale будет None,
+   то выведется указанный в фильтре текст -->
+   <h3> {{ next_sale|default_if_none:"Чуть позже о новых постах!" }} </h3>
+
+   <hr>
+   {% if object_list %}
+       <table>
+           <tr>
+               <td>Автор</td>
+               <td>Тип поста</td>
+               <td>Название</td>
+               <td>Пост</td>
+               <td>Рейтинг</td>
+           </tr>
+
+           {% for post in object_list %}
+           <tr>
+               <td>{{ post.author }}</td>
+               <td>{{ post.post_type|truncatewords:2 }}</td>
+               <td>{{ post.title|censor }}</td>
+               <td>{{ post.content|censor|truncatewords:20 }}</td>
+               <td>{{ post.rating }}</td>
+           </tr>
+           {% endfor %}
+
+       </table>
+    {% endif %}
+       <!-- Постраничный вывод -->
+       {# Добавляем пагинацию на страницу #}
+
+   {% if page_obj.has_previous %}
+       {# Для каждой ссылки пагинации указываем обработку через новый тег #}
+       <a href="?page=1">Первая страница</a> {# Кнопка "Первая страница" #}
+       {% if page_obj.previous_page_number > 2 %}
+           ...
+       {% endif %}
+       <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+       <a href="?page={{ page_obj.paginator.num_pages }}">Последняя страница</a> {# Кнопка "Последняя страница" #}
+   {% endif %}
+
+{% endblock content %}
