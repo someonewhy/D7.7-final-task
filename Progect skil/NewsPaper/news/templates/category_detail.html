@@ -1,31 +1,12 @@
-<!-- post.html -->
 {% extends 'default.html' %}
 
-{% load custom_mat %}
-{% load custom_tags %}
-
 {% block title %}
-{{ post.title }}
+{{ category.name }}
 {% endblock title %}
 
 {% block content %}
+<h1>{{ category.name }}</h1>
 
-<h1>{{ post.title }}</h1>
-<h3>Дата создание: {{ post.created_at }}</h3>
-<p>{{ post.content|censor }}</p>
-
-
-
-<form method="post" action="{% url 'post_detail' pk=post.pk %}">
-  {% csrf_token %}
-  <label for="rating">Rating:</label>
-  <input type="number" name="rating" id="rating" min="0" max="5">
-  <button type="submit">Submit Rating</button>
-</form>
-
-{% if post.rating %}
-  <p>Rating: {{ post.rating }}</p>
-{% endif %}
 {% if request.user.is_authenticated %}
     {% if is_subscribed %}
         <form method="post" action="{% url 'unsubscribe_category' category.pk %}">

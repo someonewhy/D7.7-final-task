@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <h2>Здравствуй, {{ subscriber.username }}.</h2>
+    <p>Новая статья в твоем любимом разделе:</p>
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.content|truncatewords_html:50 }}</p>
+    <p>Ссылка на статью: {{ post.get_absolute_url }}</p>
+</body>
+</html>

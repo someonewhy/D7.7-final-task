@@ -1,0 +1,13 @@
+{% block content %}
+    {% if already_author %}
+        <h2>Ура, вы в группе авторов!</h2>
+    {% else %}
+        <h2>Хочу стать автором</h2>
+        <!-- Здесь может быть ваша форма для присоединения к группе "Авторов" -->
+        <!-- Или просто кнопка, которая отправляет форму на сервер -->
+        <form action="{% url 'become_author' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Присоединиться к группе авторов</button>
+        </form>
+    {% endif %}
+{% endblock %}
