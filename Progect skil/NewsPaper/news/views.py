@@ -18,6 +18,7 @@ from django.core.mail import send_mail,BadHeaderError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from .task import send_notification_email, send_weekly_newsletter_task
 
 
 class PostListView(LoginRequiredMixin, ListView):
@@ -287,7 +288,7 @@ def send_notification_email(post, instance=None):
 @receiver(post_save, sender=Post)
 def send_notification_on_new_post(sender, instance, created, **kwargs):
     if created and instance.post_type == 'news':
-        send_notification_email(instance)
+        send_notification_email.delay(instance.pk)
 
 # Сигнал, который будет отправлять уведомление на почту при изменении статуса подписки на категорию
 @receiver(post_save, sender=Category)
@@ -296,4 +297,10 @@ def send_notification_on_subscription_change(sender, instance, **kwargs):
     for post in post_set:
         send_notification_email(post)
 
+class WeeklyNewsletterView(View):
+    def get(self, request):
+        # Вызываем задачу для отправки еженедельной рассылки
+        send_weekly_newsletter_task.delay()
 
+        # Возвращаем ответ пользователю
+        return render(request, 'weekly_newsletter.html')
